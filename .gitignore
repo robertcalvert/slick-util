@@ -1,0 +1,5 @@
+# Exclude Netbean files/folders
+build.xml
+nbproject/
+build/
+dist/
