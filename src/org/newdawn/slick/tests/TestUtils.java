@@ -198,7 +198,6 @@ public class TestUtils {
             e.printStackTrace();
         }
 
-        // TODO: PORT
         try {
             // you can play oggs by loading the complete thing into 
             // a sound
@@ -209,14 +208,16 @@ public class TestUtils {
             // should have reset the stream by thats not how the original stuff worked
             oggStream = AudioLoader.getStreamingAudio("OGG", new File("testdata/bongos.ogg").toURI().toURL());
 
-            oggStream.playAsMusic(1.0f, 1.0f, true);
-
             // can load mods (XM, MOD) using ibxm which is then played through OpenAL. MODs
             // are always streamed based on the way IBXM works
+            // TODO: PORT
             //  modStream = AudioLoader.getStreamingAudio("MOD", new File("testdata/SMB-X.XM").toURI().toURL());
+            
             // playing as music uses that reserved source to play the sound. The first
             // two arguments are pitch and gain, the boolean is whether to loop the content
-            //  modStream.playAsMusic(1.0f, 1.0f, true);
+            // TODO: PORT
+            // modStream.playAsMusic(1.0f, 1.0f, true);
+            
             // you can play aifs by loading the complete thing into 
             // a sound
             aifEffect = AudioLoader.getAudio("AIF", new FileInputStream("testdata/burp.aif"));
@@ -224,7 +225,17 @@ public class TestUtils {
             // you can play wavs by loading the complete thing into 
             // a sound
             wavEffect = AudioLoader.getAudio("WAV", new FileInputStream("testdata/cbrown01.wav"));
+
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            // TODO: Test after exception
+            oggStream.playAsMusic(1.0f, 1.0f, true); //YES!
+            aifEffect.playAsSoundEffect(1.0f, 1.0f, false); //YES!
+            //wavEffect.playAsSoundEffect(1.0f, 1.0f, false); // NOPE
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
