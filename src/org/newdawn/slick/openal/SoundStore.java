@@ -10,9 +10,9 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.HashMap;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.Sys;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.AL10;
+import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALContext;
 import org.lwjgl.openal.OpenALException;
 import org.newdawn.slick.util.Log;
@@ -30,6 +30,11 @@ public class SoundStore {
      * The single instance of this class
      */
     private static SoundStore store = new SoundStore();
+    
+    /**
+     * The ALContext context entry
+     */
+    private ALContext alContext;
 
     /**
      * True if sound effects are turned on
@@ -330,8 +335,7 @@ public class SoundStore {
             public Object run() {
                 try {
                     // TODO: PORT
-                    
-                    ALContext.create();
+                    alContext = ALContext.create();
                     //AL.create();
                     soundWorks = true;
                     sounds = true;
@@ -1004,4 +1008,14 @@ public class SoundStore {
     public int getSourceCount() {
         return sourceCount;
     }
+    
+    /**
+     * Destroy the ALC if it exists 
+     */
+    public void destroy() {
+        if(alContext != null) {
+            AL.destroy(alContext);
+        }
+    }
+    
 }

@@ -102,6 +102,7 @@ public class TestUtils {
                 glfwSwapBuffers(window);
                 glfwPollEvents();
             }
+            SoundStore.get().destroy();
             System.exit(0);
         }
     }
