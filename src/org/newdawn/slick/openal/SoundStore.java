@@ -13,6 +13,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.Sys;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.AL10;
+import org.lwjgl.openal.ALContext;
 import org.lwjgl.openal.OpenALException;
 import org.newdawn.slick.util.Log;
 import org.newdawn.slick.util.ResourceLoader;
@@ -328,7 +329,10 @@ public class SoundStore {
             @Override
             public Object run() {
                 try {
-                    AL.create();
+                    // TODO: PORT
+                    
+                    ALContext.create();
+                    //AL.create();
                     soundWorks = true;
                     sounds = true;
                     music = true;
@@ -499,7 +503,7 @@ public class SoundStore {
      *
      * @param buffer The buffer to be played
      * @param pitch The pitch to play the music at
-     * @param gain The gaing to play the music at
+     * @param gain The gain to play the music at
      * @param loop True if we should loop the music
      */
     void playAsMusic(int buffer, float pitch, float gain, boolean loop) {
@@ -871,8 +875,7 @@ public class SoundStore {
                 buffer = buf.get(0);
             } catch (Exception e) {
                 Log.error(e);
-                Sys.alert("Error", "Failed to load: " + ref + " - " + e.getMessage());
-                throw new IOException("Unable to load: " + ref);
+                throw new IOException("Failed to load: " + ref, e);
             }
         }
 

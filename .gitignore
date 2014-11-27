@@ -3,3 +3,6 @@ build.xml
 nbproject/
 build/
 dist/
+
+# Exclude the test folder
+test/

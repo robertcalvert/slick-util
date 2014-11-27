@@ -4,7 +4,8 @@ import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import org.lwjgl.opengl.EXTSecondaryColor;
+// TODO: PORT
+//import org.lwjgl.opengl.EXTSecondaryColor;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
 
@@ -310,16 +311,21 @@ public class ImmediateModeOGLRenderer implements SGL {
 
     @Override
     public boolean canTextureMirrorClamp() {
-        return GLContext.getCapabilities().GL_EXT_texture_mirror_clamp;
+        return false;
+        // TODO: PORT
+       // return GLContext.getCapabilities().GL_EXT_texture_mirror_clamp;
     }
 
     @Override
     public boolean canSecondaryColor() {
-        return GLContext.getCapabilities().GL_EXT_secondary_color;
+        return false;
+        // TODO: PORT
+        //return GLContext.getCapabilities().GL_EXT_secondary_color;
     }
 
     @Override
     public void glSecondaryColor3ubEXT(byte b, byte c, byte d) {
-        EXTSecondaryColor.glSecondaryColor3ubEXT(b, c, d);
+        // TODO: PORT
+       // EXTSecondaryColor.glSecondaryColor3ubEXT(b, c, d);
     }
 }
