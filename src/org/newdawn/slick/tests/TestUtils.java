@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-// TODO: PORT - Keyboard
-//import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
 import static org.lwjgl.system.MemoryUtil.NULL;
@@ -16,11 +14,11 @@ import static org.lwjgl.system.glfw.GLFW.glfwGetVideoMode;
 import static org.lwjgl.system.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.system.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.system.glfw.GLFW.glfwSetWindowPos;
+import static org.lwjgl.system.glfw.GLFW.glfwSetWindowShouldClose;
 import static org.lwjgl.system.glfw.GLFW.glfwShowWindow;
 import static org.lwjgl.system.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.system.glfw.GLFW.glfwSwapInterval;
 import static org.lwjgl.system.glfw.GLFW.glfwWindowShouldClose;
-import static org.lwjgl.system.glfw.GLFW.glfwSetWindowShouldClose;
 import org.lwjgl.system.glfw.GLFWvidmode;
 import org.lwjgl.system.glfw.WindowCallback;
 import org.lwjgl.system.glfw.WindowCallbackAdapter;
@@ -133,15 +131,6 @@ public class TestUtils {
             throw new RuntimeException("Failed to create the GLFW window");
         }
 
-        WindowCallback.set(window, new WindowCallbackAdapter() {
-            @Override
-            public void key(long window, int key, int scancode, int action, int mods) {
-                if (key == GLFW.GLFW_KEY_ESCAPE && action == GLFW.GLFW_RELEASE) {
-                    glfwSetWindowShouldClose(window, GL11.GL_TRUE);
-                }
-            }
-        });
-
         ByteBuffer vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         glfwSetWindowPos(
                 window,
@@ -181,9 +170,9 @@ public class TestUtils {
      */
     @SuppressWarnings("CallToPrintStackTrace")
     public void init() {
-        
+
         System.out.println("Version: " + About.VERSION);
-        
+
         // turn off all but errors
         Log.setVerbose(false);
 
@@ -191,7 +180,7 @@ public class TestUtils {
         font = new TrueTypeFont(awtFont, false);
 
         try {
-            texture = TextureLoader.getTexture("PNG", new FileInputStream("../test/resource/texture/rocks.png"));
+            texture = TextureLoader.getTexture("PNG", new FileInputStream("../test/resource/texture/wall.png"));
 
             System.out.println("Texture loaded: " + texture);
             System.out.println(">> Image width: " + texture.getImageWidth());
@@ -216,7 +205,7 @@ public class TestUtils {
             // can load mods (XM, MOD) using ibxm which is then played through OpenAL. MODs
             // are always streamed based on the way IBXM works
             // TODO: PORT - mod
-            //  modStream = AudioLoader.getStreamingAudio("MOD", new File("../test/resource/audio/SMB-X.XM").toURI().toURL());
+            // modStream = AudioLoader.getStreamingAudio("MOD", new File("../test/resource/audio/SMB-X.XM").toURI().toURL());
             
             // playing as music uses that reserved source to play the sound. The first
             // two arguments are pitch and gain, the boolean is whether to loop the content
@@ -229,7 +218,7 @@ public class TestUtils {
 
             // you can play wavs by loading the complete thing into 
             // a sound
-            wavEffect = AudioLoader.getAudio("WAV", new FileInputStream("../test/resource/audio/cbrown01.wav"));
+            wavEffect = AudioLoader.getAudio("WAV", new FileInputStream("../test/resource/audio/coin.wav"));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -237,9 +226,9 @@ public class TestUtils {
 
         try {
             // TODO: Test after exception
-            oggStream.playAsMusic(1.0f, 1.0f, true); //YES!
-            aifEffect.playAsSoundEffect(1.0f, 1.0f, false); //YES!
-            //wavEffect.playAsSoundEffect(1.0f, 1.0f, false); // NOPE
+            //oggStream.playAsMusic(1.0f, 1.0f, true); //YES!
+            //aifEffect.playAsSoundEffect(1.0f, 1.0f, false); //YES!
+            wavEffect.playAsSoundEffect(1.0f, 1.0f, false); // YES!
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -249,33 +238,34 @@ public class TestUtils {
      * Game loop update
      */
     public void update() {
-        // TODO: PORT - Keyboard
-//        while (Keyboard.next()) {
-//            if (Keyboard.getEventKeyState()) {
-//                if (Keyboard.getEventKey() == Keyboard.KEY_Q) {
-//                    // play as a one off sound effect
-//                    oggEffect.playAsSoundEffect(1.0f, 1.0f, false);
-//                }
-//                if (Keyboard.getEventKey() == Keyboard.KEY_W) {
-//                    // replace the music thats curretly playing with 
-//                    // the OGG
-//                    oggStream.playAsMusic(1.0f, 1.0f, true);
-//                }
-//                if (Keyboard.getEventKey() == Keyboard.KEY_E) {
-//                    // replace the music thats curretly playing with 
-//                    // the mod
-//                    modStream.playAsMusic(1.0f, 1.0f, true);
-//                }
-//                if (Keyboard.getEventKey() == Keyboard.KEY_R) {
-//                    // play as a one off sound effect
-//                    aifEffect.playAsSoundEffect(1.0f, 1.0f, false);
-//                }
-//                if (Keyboard.getEventKey() == Keyboard.KEY_T) {
-//                    // play as a one off sound effect
-//                    wavEffect.playAsSoundEffect(1.0f, 1.0f, false);
-//                }
-//            }
-//        }
+        WindowCallback.set(window, new WindowCallbackAdapter() {
+            @Override
+            public void key(long window, int key, int scancode, int action, int mods) {
+                if (key == GLFW.GLFW_KEY_ESCAPE && action == GLFW.GLFW_RELEASE) {
+                    glfwSetWindowShouldClose(window, GL11.GL_TRUE);
+                }
+                if (key == GLFW.GLFW_KEY_Q && action == GLFW.GLFW_PRESS) {
+                    // play as a one off sound effect
+                    oggEffect.playAsSoundEffect(1.0f, 1.0f, false);
+                }
+                if (key == GLFW.GLFW_KEY_W && action == GLFW.GLFW_PRESS) {
+                    // replace the music thats curretly playing with the OGG
+                    oggStream.playAsMusic(1.0f, 1.0f, true);
+                }
+                if (key == GLFW.GLFW_KEY_E && action == GLFW.GLFW_PRESS) {
+                    // replace the music thats curretly playing with the mod
+                    modStream.playAsMusic(1.0f, 1.0f, true);
+                }
+                if (key == GLFW.GLFW_KEY_R && action == GLFW.GLFW_PRESS) {
+                    // play as a one off sound effect
+                    aifEffect.playAsSoundEffect(1.0f, 1.0f, false);
+                }
+                if (key == GLFW.GLFW_KEY_T && action == GLFW.GLFW_PRESS) {
+                    // play as a one off sound effect
+                    wavEffect.playAsSoundEffect(1.0f, 1.0f, false);
+                }
+            }
+        });
 
         // polling is required to allow streaming to get a chance to
         // queue buffers.
@@ -291,16 +281,16 @@ public class TestUtils {
 
         GL11.glBegin(GL11.GL_QUADS);
         GL11.glTexCoord2f(0, 0);
-        GL11.glVertex2f(100, 100);
+        GL11.glVertex2f(10, 10);
         GL11.glTexCoord2f(1, 0);
-        GL11.glVertex2f(100 + texture.getTextureWidth(), 100);
+        GL11.glVertex2f(10 + texture.getTextureWidth(), 10);
         GL11.glTexCoord2f(1, 1);
-        GL11.glVertex2f(100 + texture.getTextureWidth(), 100 + texture.getTextureHeight());
+        GL11.glVertex2f(10 + texture.getTextureWidth(), 10 + texture.getTextureHeight());
         GL11.glTexCoord2f(0, 1);
-        GL11.glVertex2f(100, 100 + texture.getTextureHeight());
+        GL11.glVertex2f(10, 10 + texture.getTextureHeight());
         GL11.glEnd();
 
-        font.drawString(150, 300, "Hello LWJGL3 world!", Color.yellow);
+        font.drawString(10, 150, "Hello LWJGL3 world!", Color.yellow);
     }
 
 }

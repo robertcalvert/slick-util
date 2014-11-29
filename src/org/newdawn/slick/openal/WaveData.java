@@ -126,9 +126,9 @@ public class WaveData {
     @SuppressWarnings({"UseSpecificCatch", "CallToPrintStackTrace"})
     public static WaveData create(InputStream is) {
         try {
-            BufferedInputStream fis = new BufferedInputStream((FileInputStream) is);
+            BufferedInputStream bis = new BufferedInputStream((FileInputStream) is);
             return create(
-                    AudioSystem.getAudioInputStream(fis));
+                    AudioSystem.getAudioInputStream(bis));
         } catch (Exception e) {
             org.lwjgl.LWJGLUtil.log("Unable to create from inputstream");
             e.printStackTrace();
