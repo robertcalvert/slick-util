@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-// TODO: PORT
+// TODO: PORT - Keyboard
 //import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
@@ -24,6 +24,7 @@ import static org.lwjgl.system.glfw.GLFW.glfwSetWindowShouldClose;
 import org.lwjgl.system.glfw.GLFWvidmode;
 import org.lwjgl.system.glfw.WindowCallback;
 import org.lwjgl.system.glfw.WindowCallbackAdapter;
+import org.newdawn.slick.About;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.TrueTypeFont;
@@ -127,7 +128,7 @@ public class TestUtils {
         int WIDTH = width;
         int HEIGHT = height;
 
-        window = GLFW.glfwCreateWindow(WIDTH, HEIGHT, "Hello World!", NULL, NULL);
+        window = GLFW.glfwCreateWindow(WIDTH, HEIGHT, "Hello LWJGL3 world!", NULL, NULL);
         if (window == NULL) {
             throw new RuntimeException("Failed to create the GLFW window");
         }
@@ -180,6 +181,9 @@ public class TestUtils {
      */
     @SuppressWarnings("CallToPrintStackTrace")
     public void init() {
+        
+        System.out.println("Version: " + About.VERSION);
+        
         // turn off all but errors
         Log.setVerbose(false);
 
@@ -187,7 +191,7 @@ public class TestUtils {
         font = new TrueTypeFont(awtFont, false);
 
         try {
-            texture = TextureLoader.getTexture("PNG", new FileInputStream("testdata/rocks.png"));
+            texture = TextureLoader.getTexture("PNG", new FileInputStream("../test/resource/texture/rocks.png"));
 
             System.out.println("Texture loaded: " + texture);
             System.out.println(">> Image width: " + texture.getImageWidth());
@@ -202,30 +206,30 @@ public class TestUtils {
         try {
             // you can play oggs by loading the complete thing into 
             // a sound
-            oggEffect = AudioLoader.getAudio("OGG", new FileInputStream("testdata/restart.ogg"));
+            oggEffect = AudioLoader.getAudio("OGG", new FileInputStream("../test/resource/audio/restart.ogg"));
 
             // or setting up a stream to read from. Note that the argument becomes
             // a URL here so it can be reopened when the stream is complete. Probably
             // should have reset the stream by thats not how the original stuff worked
-            oggStream = AudioLoader.getStreamingAudio("OGG", new File("testdata/bongos.ogg").toURI().toURL());
+            oggStream = AudioLoader.getStreamingAudio("OGG", new File("../test/resource/audio/bongos.ogg").toURI().toURL());
 
             // can load mods (XM, MOD) using ibxm which is then played through OpenAL. MODs
             // are always streamed based on the way IBXM works
-            // TODO: PORT
-            //  modStream = AudioLoader.getStreamingAudio("MOD", new File("testdata/SMB-X.XM").toURI().toURL());
+            // TODO: PORT - mod
+            //  modStream = AudioLoader.getStreamingAudio("MOD", new File("../test/resource/audio/SMB-X.XM").toURI().toURL());
             
             // playing as music uses that reserved source to play the sound. The first
             // two arguments are pitch and gain, the boolean is whether to loop the content
-            // TODO: PORT
+            // TODO: PORT - mod
             // modStream.playAsMusic(1.0f, 1.0f, true);
             
             // you can play aifs by loading the complete thing into 
             // a sound
-            aifEffect = AudioLoader.getAudio("AIF", new FileInputStream("testdata/burp.aif"));
+            aifEffect = AudioLoader.getAudio("AIF", new FileInputStream("../test/resource/audio/burp.aif"));
 
             // you can play wavs by loading the complete thing into 
             // a sound
-            wavEffect = AudioLoader.getAudio("WAV", new FileInputStream("testdata/cbrown01.wav"));
+            wavEffect = AudioLoader.getAudio("WAV", new FileInputStream("../test/resource/audio/cbrown01.wav"));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -245,7 +249,7 @@ public class TestUtils {
      * Game loop update
      */
     public void update() {
-        // TODO: PORT
+        // TODO: PORT - Keyboard
 //        while (Keyboard.next()) {
 //            if (Keyboard.getEventKeyState()) {
 //                if (Keyboard.getEventKey() == Keyboard.KEY_Q) {
@@ -254,7 +258,7 @@ public class TestUtils {
 //                }
 //                if (Keyboard.getEventKey() == Keyboard.KEY_W) {
 //                    // replace the music thats curretly playing with 
-//                    // the ogg
+//                    // the OGG
 //                    oggStream.playAsMusic(1.0f, 1.0f, true);
 //                }
 //                if (Keyboard.getEventKey() == Keyboard.KEY_E) {
@@ -296,7 +300,7 @@ public class TestUtils {
         GL11.glVertex2f(100, 100 + texture.getTextureHeight());
         GL11.glEnd();
 
-        font.drawString(150, 300, "HELLO LWJGL WORLD", Color.yellow);
+        font.drawString(150, 300, "Hello LWJGL3 world!", Color.yellow);
     }
 
 }

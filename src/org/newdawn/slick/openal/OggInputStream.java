@@ -157,7 +157,7 @@ public class OggInputStream extends InputStream implements AudioInputStream {
     }
 
     /**
-     * Initialise the vorbis decoding
+     * Initialise the Vorbis decoding
      */
     private void initVorbis() {
         syncState.init();
@@ -186,7 +186,7 @@ public class OggInputStream extends InputStream implements AudioInputStream {
         try {
             bytes = input.read(buffer, index, 4096);
         } catch (Exception e) {
-            Log.error("Failure reading in vorbis");
+            Log.error("Failure reading in Vorbis");
             Log.error(e);
             endOfStream = true;
             return false;
@@ -226,14 +226,14 @@ public class OggInputStream extends InputStream implements AudioInputStream {
         }
 
         if (streamState.packetout(packet) != 1) {
-            // no page? must not be vorbis
+            // no page? must not be Vorbis
             Log.error("Error reading initial header packet.");
             endOfStream = true;
             return false;
         }
 
         if (oggInfo.synthesis_headerin(comment, packet) < 0) {
-            // error case; not a vorbis header
+            // error case; not a Vorbis header
             Log.error("This Ogg bitstream does not contain Vorbis audio data.");
             endOfStream = true;
             return false;
@@ -437,7 +437,7 @@ public class OggInputStream extends InputStream implements AudioInputStream {
                         try {
                             bytes = input.read(buffer, index, 4096);
                         } catch (Exception e) {
-                            Log.error("Failure during vorbis decoding");
+                            Log.error("Failure during Vorbis decoding");
                             Log.error(e);
                             endOfStream = true;
                             return;

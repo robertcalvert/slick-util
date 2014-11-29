@@ -12,7 +12,6 @@ import java.util.HashMap;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.AL10;
-import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALContext;
 import org.lwjgl.openal.OpenALException;
 import org.newdawn.slick.util.Log;
@@ -334,9 +333,7 @@ public class SoundStore {
             @Override
             public Object run() {
                 try {
-                    // TODO: PORT
                     alContext = ALContext.create();
-                    //AL.create();
                     soundWorks = true;
                     sounds = true;
                     music = true;
@@ -1010,7 +1007,7 @@ public class SoundStore {
     }
     
     /**
-     * Destroy the ALC if it exists 
+     * Destroy the ALContext if it exists 
      */
     public void destroy() {
         if(alContext != null) {
