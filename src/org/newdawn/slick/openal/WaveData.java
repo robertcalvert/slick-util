@@ -33,6 +33,7 @@ package org.newdawn.slick.openal;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -125,8 +126,9 @@ public class WaveData {
     @SuppressWarnings({"UseSpecificCatch", "CallToPrintStackTrace"})
     public static WaveData create(InputStream is) {
         try {
+            BufferedInputStream fis = new BufferedInputStream((FileInputStream) is);
             return create(
-                    AudioSystem.getAudioInputStream(is));
+                    AudioSystem.getAudioInputStream(fis));
         } catch (Exception e) {
             org.lwjgl.LWJGLUtil.log("Unable to create from inputstream");
             e.printStackTrace();
