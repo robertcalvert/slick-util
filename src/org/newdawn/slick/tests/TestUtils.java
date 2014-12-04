@@ -4,24 +4,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import org.lwjgl.glfw.Callbacks;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWkeyfun;
+import org.lwjgl.glfw.GLFWvidmode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
 import static org.lwjgl.system.MemoryUtil.NULL;
-import org.lwjgl.system.glfw.ErrorCallback;
-import org.lwjgl.system.glfw.GLFW;
-import static org.lwjgl.system.glfw.GLFW.glfwGetPrimaryMonitor;
-import static org.lwjgl.system.glfw.GLFW.glfwGetVideoMode;
-import static org.lwjgl.system.glfw.GLFW.glfwMakeContextCurrent;
-import static org.lwjgl.system.glfw.GLFW.glfwPollEvents;
-import static org.lwjgl.system.glfw.GLFW.glfwSetWindowPos;
-import static org.lwjgl.system.glfw.GLFW.glfwSetWindowShouldClose;
-import static org.lwjgl.system.glfw.GLFW.glfwShowWindow;
-import static org.lwjgl.system.glfw.GLFW.glfwSwapBuffers;
-import static org.lwjgl.system.glfw.GLFW.glfwSwapInterval;
-import static org.lwjgl.system.glfw.GLFW.glfwWindowShouldClose;
-import org.lwjgl.system.glfw.GLFWvidmode;
-import org.lwjgl.system.glfw.WindowCallback;
-import org.lwjgl.system.glfw.WindowCallbackAdapter;
 import org.newdawn.slick.About;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
@@ -94,12 +83,12 @@ public class TestUtils {
         while (true) {
             GLContext.createFromCurrent();
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-            while (glfwWindowShouldClose(window) == GL11.GL_FALSE) {
+            while (GLFW.glfwWindowShouldClose(window) == GL11.GL_FALSE) {
                 GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
                 update();
                 render();
-                glfwSwapBuffers(window);
-                glfwPollEvents();
+                GLFW.glfwSwapBuffers(window);
+                GLFW.glfwPollEvents();
             }
             SoundStore.get().destroy();
             System.exit(0);
@@ -114,7 +103,7 @@ public class TestUtils {
      */
     @SuppressWarnings("CallToPrintStackTrace")
     private void initGL(int width, int height) {
-        GLFW.glfwSetErrorCallback(ErrorCallback.Util.getDefault());
+        GLFW.glfwSetErrorCallback(Callbacks.errorfunPrint());
         if (GLFW.glfwInit() != GL11.GL_TRUE) {
             throw new IllegalStateException("Unable to initialize GLFW");
         }
@@ -131,17 +120,17 @@ public class TestUtils {
             throw new RuntimeException("Failed to create the GLFW window");
         }
 
-        ByteBuffer vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        glfwSetWindowPos(
+        ByteBuffer vidmode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
+        GLFW.glfwSetWindowPos(
                 window,
                 (GLFWvidmode.width(vidmode) - WIDTH) / 2,
                 (GLFWvidmode.height(vidmode) - HEIGHT) / 2
         );
 
-        glfwMakeContextCurrent(window);
-        glfwSwapInterval(1);
+        GLFW.glfwMakeContextCurrent(window);
+        GLFW.glfwSwapInterval(1);
 
-        glfwShowWindow(window);
+        GLFW.glfwShowWindow(window);
 
         GLContext.createFromCurrent();
 
@@ -202,16 +191,6 @@ public class TestUtils {
             // should have reset the stream by thats not how the original stuff worked
             oggStream = AudioLoader.getStreamingAudio("OGG", new File("../test/resource/audio/bongos.ogg").toURI().toURL());
 
-            // can load mods (XM, MOD) using ibxm which is then played through OpenAL. MODs
-            // are always streamed based on the way IBXM works
-            // TODO: PORT - mod
-            // modStream = AudioLoader.getStreamingAudio("MOD", new File("../test/resource/audio/SMB-X.XM").toURI().toURL());
-            
-            // playing as music uses that reserved source to play the sound. The first
-            // two arguments are pitch and gain, the boolean is whether to loop the content
-            // TODO: PORT - mod
-            // modStream.playAsMusic(1.0f, 1.0f, true);
-            
             // you can play aifs by loading the complete thing into 
             // a sound
             aifEffect = AudioLoader.getAudio("AIF", new FileInputStream("../test/resource/audio/burp.aif"));
@@ -219,6 +198,14 @@ public class TestUtils {
             // you can play wavs by loading the complete thing into 
             // a sound
             wavEffect = AudioLoader.getAudio("WAV", new FileInputStream("../test/resource/audio/coin.wav"));
+            
+            // can load mods (XM, MOD) using ibxm which is then played through OpenAL. MODs
+            // are always streamed based on the way IBXM works
+            modStream = AudioLoader.getStreamingAudio("MOD", new File("../test/resource/audio/SMB-X.XM").toURI().toURL());
+
+            // playing as music uses that reserved source to play the sound. The first
+            // two arguments are pitch and gain, the boolean is whether to loop the content
+    //        modStream.playAsMusic(1.0f, 1.0f, true);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -238,11 +225,11 @@ public class TestUtils {
      * Game loop update
      */
     public void update() {
-        WindowCallback.set(window, new WindowCallbackAdapter() {
+        GLFW.glfwSetKeyCallback(window, new GLFWkeyfun() {
             @Override
-            public void key(long window, int key, int scancode, int action, int mods) {
+            public void invoke(long window, int key, int scancode, int action, int mods) {
                 if (key == GLFW.GLFW_KEY_ESCAPE && action == GLFW.GLFW_RELEASE) {
-                    glfwSetWindowShouldClose(window, GL11.GL_TRUE);
+                    GLFW.glfwSetWindowShouldClose(window, GL11.GL_TRUE);
                 }
                 if (key == GLFW.GLFW_KEY_Q && action == GLFW.GLFW_PRESS) {
                     // play as a one off sound effect
@@ -254,7 +241,7 @@ public class TestUtils {
                 }
                 if (key == GLFW.GLFW_KEY_E && action == GLFW.GLFW_PRESS) {
                     // replace the music thats curretly playing with the mod
-                    modStream.playAsMusic(1.0f, 1.0f, true);
+        //            modStream.playAsMusic(1.0f, 1.0f, true);
                 }
                 if (key == GLFW.GLFW_KEY_R && action == GLFW.GLFW_PRESS) {
                     // play as a one off sound effect
