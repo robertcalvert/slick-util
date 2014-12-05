@@ -12,7 +12,7 @@ import org.lwjgl.glfw.GLFWvidmode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
 import static org.lwjgl.system.MemoryUtil.NULL;
-import org.newdawn.slick.About;
+import org.newdawn.slick.Sys;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.TrueTypeFont;
@@ -86,6 +86,10 @@ public class TestUtils {
      * Start the test
      */
     public void start() {
+
+        System.out.println("LWJGL: " + org.lwjgl.Sys.getVersion());
+        System.out.println("slick-util: " + Sys.getVersion());
+        
 
         try {
             initGL(400, 400);
@@ -173,9 +177,6 @@ public class TestUtils {
      */
     @SuppressWarnings("CallToPrintStackTrace")
     public void init() {
-
-        System.out.println("Version: " + About.VERSION);
-
         // turn off all but errors
         Log.setVerbose(false);
 
