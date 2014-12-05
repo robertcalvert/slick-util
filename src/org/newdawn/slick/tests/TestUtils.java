@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWerrorfun;
 import org.lwjgl.glfw.GLFWkeyfun;
 import org.lwjgl.glfw.GLFWvidmode;
 import org.lwjgl.opengl.GL11;
@@ -62,6 +63,14 @@ public class TestUtils {
      * The display window
      */
     private long window;
+    /**
+     * Reference for callback
+     */
+    private GLFWerrorfun errorfun;
+    /**
+     * Reference for callback
+     */
+    private GLFWkeyfun keyfun;
 
     /**
      * Entry point to the tests
@@ -77,10 +86,11 @@ public class TestUtils {
      * Start the test
      */
     public void start() {
-        initGL(400, 400);
-        init();
 
-        while (true) {
+        try {
+            initGL(400, 400);
+            init();
+
             GLContext.createFromCurrent();
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
             while (GLFW.glfwWindowShouldClose(window) == GL11.GL_FALSE) {
@@ -90,8 +100,13 @@ public class TestUtils {
                 GLFW.glfwSwapBuffers(window);
                 GLFW.glfwPollEvents();
             }
+
+            GLFW.glfwDestroyWindow(window);
+            keyfun.release();
+        } finally {
             SoundStore.get().destroy();
-            System.exit(0);
+            GLFW.glfwTerminate();
+            errorfun.release();
         }
     }
 
@@ -101,9 +116,8 @@ public class TestUtils {
      * @param width The width of the display
      * @param height The height of the display
      */
-    @SuppressWarnings("CallToPrintStackTrace")
     private void initGL(int width, int height) {
-        GLFW.glfwSetErrorCallback(Callbacks.errorfunPrint());
+        GLFW.glfwSetErrorCallback(errorfun = Callbacks.errorfunPrint(System.err));
         if (GLFW.glfwInit() != GL11.GL_TRUE) {
             throw new IllegalStateException("Unable to initialize GLFW");
         }
@@ -198,25 +212,15 @@ public class TestUtils {
             // you can play wavs by loading the complete thing into 
             // a sound
             wavEffect = AudioLoader.getAudio("WAV", new FileInputStream("../test/resource/audio/coin.wav"));
-            
+
             // can load mods (XM, MOD) using ibxm which is then played through OpenAL. MODs
             // are always streamed based on the way IBXM works
-            modStream = AudioLoader.getStreamingAudio("MOD", new File("../test/resource/audio/SMB-X.XM").toURI().toURL());
-
+             modStream = AudioLoader.getStreamingAudio("MOD", new File("../test/resource/audio/SMB-X.XM").toURI().toURL());
+            
             // playing as music uses that reserved source to play the sound. The first
             // two arguments are pitch and gain, the boolean is whether to loop the content
     //        modStream.playAsMusic(1.0f, 1.0f, true);
-
         } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            // TODO: Test after exception
-            //oggStream.playAsMusic(1.0f, 1.0f, true); //YES!
-            //aifEffect.playAsSoundEffect(1.0f, 1.0f, false); //YES!
-            wavEffect.playAsSoundEffect(1.0f, 1.0f, false); // YES!
-        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -225,7 +229,7 @@ public class TestUtils {
      * Game loop update
      */
     public void update() {
-        GLFW.glfwSetKeyCallback(window, new GLFWkeyfun() {
+        GLFW.glfwSetKeyCallback(window, keyfun = new GLFWkeyfun() {
             @Override
             public void invoke(long window, int key, int scancode, int action, int mods) {
                 if (key == GLFW.GLFW_KEY_ESCAPE && action == GLFW.GLFW_RELEASE) {
