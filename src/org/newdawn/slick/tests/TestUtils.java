@@ -1,20 +1,21 @@
 package org.newdawn.slick.tests;
 
+import java.awt.Font;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWerrorfun;
-import org.lwjgl.glfw.GLFWkeyfun;
+import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWvidmode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
 import static org.lwjgl.system.MemoryUtil.NULL;
-import org.newdawn.slick.Sys;
 import org.newdawn.slick.Color;
-import org.newdawn.slick.Font;
+import org.newdawn.slick.Sys;
 import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.openal.Audio;
 import org.newdawn.slick.openal.AudioLoader;
@@ -22,6 +23,7 @@ import org.newdawn.slick.openal.SoundStore;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.Log;
+import org.newdawn.slick.util.ResourceLoader;
 
 /**
  * A simple utility test to use the internal slick API without the slick
@@ -58,7 +60,11 @@ public class TestUtils {
     /**
      * The font to draw to the screen
      */
-    private Font font;
+    private TrueTypeFont font1;
+    /**
+     * The font to draw to the screen
+     */
+    private TrueTypeFont font2;
     /**
      * The display window
      */
@@ -66,11 +72,11 @@ public class TestUtils {
     /**
      * Reference for callback
      */
-    private GLFWerrorfun errorfun;
+    private GLFWErrorCallback errorCallBack;
     /**
      * Reference for callback
      */
-    private GLFWkeyfun keyfun;
+    private GLFWKeyCallback keyCallBack;
 
     /**
      * Entry point to the tests
@@ -86,13 +92,11 @@ public class TestUtils {
      * Start the test
      */
     public void start() {
-
         System.out.println("LWJGL: " + org.lwjgl.Sys.getVersion());
         System.out.println("slick-util: " + Sys.getVersion());
-        
 
         try {
-            initGL(400, 400);
+            initGL(600, 400);
             init();
 
             GLContext.createFromCurrent();
@@ -106,11 +110,11 @@ public class TestUtils {
             }
 
             GLFW.glfwDestroyWindow(window);
-            keyfun.release();
+            keyCallBack.release();
         } finally {
             SoundStore.get().destroy();
             GLFW.glfwTerminate();
-            errorfun.release();
+            errorCallBack.release();
         }
     }
 
@@ -121,7 +125,7 @@ public class TestUtils {
      * @param height The height of the display
      */
     private void initGL(int width, int height) {
-        GLFW.glfwSetErrorCallback(errorfun = Callbacks.errorfunPrint(System.err));
+        GLFW.glfwSetErrorCallback(errorCallBack = Callbacks.errorCallbackPrint(System.err));
         if (GLFW.glfwInit() != GL11.GL_TRUE) {
             throw new IllegalStateException("Unable to initialize GLFW");
         }
@@ -133,7 +137,7 @@ public class TestUtils {
         int WIDTH = width;
         int HEIGHT = height;
 
-        window = GLFW.glfwCreateWindow(WIDTH, HEIGHT, "Hello LWJGL3 world!", NULL, NULL);
+        window = GLFW.glfwCreateWindow(WIDTH, HEIGHT, "slick-util " + Sys.getVersion(), NULL, NULL);
         if (window == NULL) {
             throw new RuntimeException("Failed to create the GLFW window");
         }
@@ -180,15 +184,25 @@ public class TestUtils {
         // turn off all but errors
         Log.setVerbose(false);
 
-        java.awt.Font awtFont = new java.awt.Font("Times New Roman", java.awt.Font.BOLD, 16);
-        font = new TrueTypeFont(awtFont, false);
+        try {
+            
+            Font awtFont = new Font("Times New Roman", Font.BOLD, 16);
+            font1 = new TrueTypeFont(awtFont, true);
+            
+            InputStream inputStream = ResourceLoader.getResourceAsStream("../test/resource/font/Grand9KPixel.ttf");
+            Font awtFont2 = Font.createFont(Font.TRUETYPE_FONT, inputStream);
+            awtFont2 = awtFont2.deriveFont(16);
+            font2 = new TrueTypeFont(awtFont2, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         try {
             texture = TextureLoader.getTexture("PNG", new FileInputStream("../test/resource/texture/wall.png"));
 
             System.out.println("Texture loaded: " + texture);
             System.out.println(">> Image width: " + texture.getImageWidth());
-            System.out.println(">> Image height: " + texture.getImageWidth());
+            System.out.println(">> Image height: " + texture.getImageHeight());
             System.out.println(">> Texture width: " + texture.getTextureWidth());
             System.out.println(">> Texture height: " + texture.getTextureHeight());
             System.out.println(">> Texture ID: " + texture.getTextureID());
@@ -216,11 +230,11 @@ public class TestUtils {
 
             // can load mods (XM, MOD) using ibxm which is then played through OpenAL. MODs
             // are always streamed based on the way IBXM works
-             modStream = AudioLoader.getStreamingAudio("MOD", new File("../test/resource/audio/SMB-X.XM").toURI().toURL());
-            
+            modStream = AudioLoader.getStreamingAudio("MOD", new File("../test/resource/audio/SMB-X.XM").toURI().toURL());
+
             // playing as music uses that reserved source to play the sound. The first
             // two arguments are pitch and gain, the boolean is whether to loop the content
-    //        modStream.playAsMusic(1.0f, 1.0f, true);
+            modStream.playAsMusic(1.0f, 1.0f, true);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -230,31 +244,36 @@ public class TestUtils {
      * Game loop update
      */
     public void update() {
-        GLFW.glfwSetKeyCallback(window, keyfun = new GLFWkeyfun() {
+        GLFW.glfwSetKeyCallback(window, keyCallBack = new GLFWKeyCallback() {
             @Override
+            @SuppressWarnings("CallToPrintStackTrace")
             public void invoke(long window, int key, int scancode, int action, int mods) {
-                if (key == GLFW.GLFW_KEY_ESCAPE && action == GLFW.GLFW_RELEASE) {
-                    GLFW.glfwSetWindowShouldClose(window, GL11.GL_TRUE);
-                }
-                if (key == GLFW.GLFW_KEY_Q && action == GLFW.GLFW_PRESS) {
-                    // play as a one off sound effect
-                    oggEffect.playAsSoundEffect(1.0f, 1.0f, false);
-                }
-                if (key == GLFW.GLFW_KEY_W && action == GLFW.GLFW_PRESS) {
-                    // replace the music thats curretly playing with the OGG
-                    oggStream.playAsMusic(1.0f, 1.0f, true);
-                }
-                if (key == GLFW.GLFW_KEY_E && action == GLFW.GLFW_PRESS) {
-                    // replace the music thats curretly playing with the mod
-        //            modStream.playAsMusic(1.0f, 1.0f, true);
-                }
-                if (key == GLFW.GLFW_KEY_R && action == GLFW.GLFW_PRESS) {
-                    // play as a one off sound effect
-                    aifEffect.playAsSoundEffect(1.0f, 1.0f, false);
-                }
-                if (key == GLFW.GLFW_KEY_T && action == GLFW.GLFW_PRESS) {
-                    // play as a one off sound effect
-                    wavEffect.playAsSoundEffect(1.0f, 1.0f, false);
+                try {
+                    if (key == GLFW.GLFW_KEY_ESCAPE && action == GLFW.GLFW_RELEASE) {
+                        GLFW.glfwSetWindowShouldClose(window, GL11.GL_TRUE);
+                    }
+                    if (key == GLFW.GLFW_KEY_Q && action == GLFW.GLFW_PRESS) {
+                        // play as a one off sound effect
+                        oggEffect.playAsSoundEffect(1.0f, 1.0f, false);
+                    }
+                    if (key == GLFW.GLFW_KEY_W && action == GLFW.GLFW_PRESS) {
+                        // replace the music thats curretly playing with the OGG
+                        oggStream.playAsMusic(1.0f, 1.0f, true);
+                    }
+                    if (key == GLFW.GLFW_KEY_E && action == GLFW.GLFW_PRESS) {
+                        // replace the music thats curretly playing with the mod
+                        modStream.playAsMusic(1.0f, 1.0f, true);
+                    }
+                    if (key == GLFW.GLFW_KEY_R && action == GLFW.GLFW_PRESS) {
+                        // play as a one off sound effect
+                        aifEffect.playAsSoundEffect(1.0f, 1.0f, false);
+                    }
+                    if (key == GLFW.GLFW_KEY_T && action == GLFW.GLFW_PRESS) {
+                        // play as a one off sound effect
+                        wavEffect.playAsSoundEffect(1.0f, 1.0f, false);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -282,7 +301,9 @@ public class TestUtils {
         GL11.glVertex2f(10, 10 + texture.getTextureHeight());
         GL11.glEnd();
 
-        font.drawString(10, 150, "Hello LWJGL3 world!", Color.yellow);
+        font1.drawString(10, 150, "Hello LWJGL " + org.lwjgl.Sys.getVersion() + "world!", Color.yellow);
+
+        font2.drawString(10, 200, "Hello LWJGL " + org.lwjgl.Sys.getVersion() + "world!", Color.yellow);
     }
 
 }

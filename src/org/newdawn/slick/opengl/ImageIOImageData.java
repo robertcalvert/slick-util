@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Hashtable;
 import javax.imageio.ImageIO;
 
 /**
@@ -118,8 +117,9 @@ public class ImageIOImageData implements LoadableImageData {
         return imageToByteBuffer(bufferedImage, flipped, forceAlpha, transparent);
     }
 
+    @SuppressWarnings("UseOfObsoleteCollectionType")
     public ByteBuffer imageToByteBuffer(BufferedImage image, boolean flipped, boolean forceAlpha, int[] transparent) {
-        ByteBuffer imageBuffer = null;
+        ByteBuffer imageBuffer;
         WritableRaster raster;
         BufferedImage texImage;
 
@@ -147,11 +147,11 @@ public class ImageIOImageData implements LoadableImageData {
         if (useAlpha) {
             depth = 32;
             raster = Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE, localTexWidth, localTexHeight, 4, null);
-            texImage = new BufferedImage(glAlphaColorModel, raster, false, new Hashtable());
+            texImage = new BufferedImage(glAlphaColorModel, raster, false, new java.util.Hashtable());
         } else {
             depth = 24;
             raster = Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE, localTexWidth, localTexHeight, 3, null);
-            texImage = new BufferedImage(glColorModel, raster, false, new Hashtable());
+            texImage = new BufferedImage(glColorModel, raster, false, new java.util.Hashtable());
         }
 
         // copy the source image into the produced image

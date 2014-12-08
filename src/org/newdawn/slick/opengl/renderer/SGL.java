@@ -4,7 +4,8 @@ import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import org.lwjgl.opengl.ARBTextureMirrorClampToEdge;
+import org.lwjgl.opengl.EXTSecondaryColor;
+import org.lwjgl.opengl.EXTTextureMirrorClamp;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -190,7 +191,7 @@ public interface SGL {
     /**
      * OpenGL Enum - @url http://www.opengl.org/documentation
      */
-    public static final int GL_MIRROR_CLAMP_TO_EDGE = ARBTextureMirrorClampToEdge.GL_MIRROR_CLAMP_TO_EDGE;
+    public static final int GL_MIRROR_CLAMP_TO_EDGE_EXT = EXTTextureMirrorClamp.GL_MIRROR_CLAMP_TO_EDGE_EXT;
 
     /**
      * OpenGL Enum - @url http://www.opengl.org/documentation
@@ -205,6 +206,11 @@ public interface SGL {
      * OpenGL Enum - @url http://www.opengl.org/documentation
      */
     public static final int GL_CLAMP = GL11.GL_CLAMP;
+
+    /**
+     * OpenGL Enum - @url http://www.opengl.org/documentation
+     */
+    public static final int GL_COLOR_SUM_EXT = EXTSecondaryColor.GL_COLOR_SUM_EXT;
 
     /**
      * OpenGL Enum - @url http://www.opengl.org/documentation
@@ -648,5 +654,9 @@ public interface SGL {
      * @return True if the mirror clamp extension is available
      */
     public boolean canTextureMirrorClamp();
+
+    public boolean canSecondaryColor();
+
+    public void glSecondaryColor3ubEXT(byte b, byte c, byte d);
 
 }
