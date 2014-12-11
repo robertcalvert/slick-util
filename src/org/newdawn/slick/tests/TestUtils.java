@@ -1,6 +1,7 @@
 package org.newdawn.slick.tests;
 
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -72,11 +73,11 @@ public class TestUtils {
     /**
      * Reference for callback
      */
-    private GLFWErrorCallback errorCallBack;
+    private GLFWErrorCallback errorCallback;
     /**
      * Reference for callback
      */
-    private GLFWKeyCallback keyCallBack;
+    private GLFWKeyCallback keyCallback;
 
     /**
      * Entry point to the tests
@@ -92,11 +93,14 @@ public class TestUtils {
      * Start the test
      */
     public void start() {
+        // turn off all but errors
+        Log.setVerbose(false);
+
         System.out.println("LWJGL: " + org.lwjgl.Sys.getVersion());
         System.out.println("slick-util: " + Sys.getVersion());
 
         try {
-            initGL(600, 400);
+            initGL(400, 400);
             init();
 
             GLContext.createFromCurrent();
@@ -108,13 +112,12 @@ public class TestUtils {
                 GLFW.glfwSwapBuffers(window);
                 GLFW.glfwPollEvents();
             }
-
             GLFW.glfwDestroyWindow(window);
-            keyCallBack.release();
+            keyCallback.release();
         } finally {
             SoundStore.get().destroy();
             GLFW.glfwTerminate();
-            errorCallBack.release();
+            errorCallback.release();
         }
     }
 
@@ -125,7 +128,7 @@ public class TestUtils {
      * @param height The height of the display
      */
     private void initGL(int width, int height) {
-        GLFW.glfwSetErrorCallback(errorCallBack = Callbacks.errorCallbackPrint(System.err));
+        GLFW.glfwSetErrorCallback(errorCallback = Callbacks.errorCallbackPrint(System.err));
         if (GLFW.glfwInit() != GL11.GL_TRUE) {
             throw new IllegalStateException("Unable to initialize GLFW");
         }
@@ -181,21 +184,6 @@ public class TestUtils {
      */
     @SuppressWarnings("CallToPrintStackTrace")
     public void init() {
-        // turn off all but errors
-        Log.setVerbose(false);
-
-        try {
-            
-            Font awtFont = new Font("Times New Roman", Font.BOLD, 16);
-            font1 = new TrueTypeFont(awtFont, true);
-            
-            InputStream inputStream = ResourceLoader.getResourceAsStream("../test/resource/font/Grand9KPixel.ttf");
-            Font awtFont2 = Font.createFont(Font.TRUETYPE_FONT, inputStream);
-            awtFont2 = awtFont2.deriveFont(16);
-            font2 = new TrueTypeFont(awtFont2, true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         try {
             texture = TextureLoader.getTexture("PNG", new FileInputStream("../test/resource/texture/wall.png"));
@@ -207,6 +195,18 @@ public class TestUtils {
             System.out.println(">> Texture height: " + texture.getTextureHeight());
             System.out.println(">> Texture ID: " + texture.getTextureID());
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Font awtFont = new Font("Times New Roman", Font.BOLD, 24);
+            font1 = new TrueTypeFont(awtFont, true);
+
+            InputStream inputStream = ResourceLoader.getResourceAsStream("../test/resource/font/Grand9KPixel.ttf");
+            Font awtFont2 = Font.createFont(Font.TRUETYPE_FONT, inputStream);
+            awtFont2 = awtFont2.deriveFont(24f);
+            font2 = new TrueTypeFont(awtFont2, true);
+        } catch (FontFormatException | IOException e) {
             e.printStackTrace();
         }
 
@@ -238,13 +238,8 @@ public class TestUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
 
-    /**
-     * Game loop update
-     */
-    public void update() {
-        GLFW.glfwSetKeyCallback(window, keyCallBack = new GLFWKeyCallback() {
+        GLFW.glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
             @Override
             @SuppressWarnings("CallToPrintStackTrace")
             public void invoke(long window, int key, int scancode, int action, int mods) {
@@ -277,7 +272,12 @@ public class TestUtils {
                 }
             }
         });
+    }
 
+    /**
+     * Game loop update
+     */
+    public void update() {
         // polling is required to allow streaming to get a chance to
         // queue buffers.
         SoundStore.get().poll(0);
@@ -301,9 +301,9 @@ public class TestUtils {
         GL11.glVertex2f(10, 10 + texture.getTextureHeight());
         GL11.glEnd();
 
-        font1.drawString(10, 150, "Hello LWJGL " + org.lwjgl.Sys.getVersion() + "world!", Color.yellow);
+        font1.drawString(10, 150, "Hello LWJGL " + org.lwjgl.Sys.getVersion() + " world!", Color.yellow);
 
-        font2.drawString(10, 200, "Hello LWJGL " + org.lwjgl.Sys.getVersion() + "world!", Color.yellow);
+        font2.drawString(10, 200, "Hello LWJGL " + org.lwjgl.Sys.getVersion() + " world!", Color.yellow);
     }
 
 }

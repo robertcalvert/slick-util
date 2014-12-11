@@ -2,6 +2,10 @@
 
 This is a work in progress port of [slick-util] to [LWJGL3].
 
+Screenshot:
+
+![screenshot](screenshot.png)
+
 **NOTE: ninjacave now provides a [slick-util3] wrapper which probably works much better than my implementation. If you are interested in slick-util for LWJGL3 you should definitely check out the ninjacave wrapper fisrt.**
 
 ---
