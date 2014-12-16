@@ -113,11 +113,11 @@ public class TestUtils {
                 GLFW.glfwPollEvents();
             }
             GLFW.glfwDestroyWindow(window);
-            keyCallback.release();
+            keyCallback = GLFW.glfwSetKeyCallback(window, null);
         } finally {
             SoundStore.get().destroy();
             GLFW.glfwTerminate();
-            errorCallback.release();
+            errorCallback = GLFW.glfwSetErrorCallback(null);
         }
     }
 
