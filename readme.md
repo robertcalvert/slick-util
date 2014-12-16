@@ -15,7 +15,7 @@ Screenshot:
 Copyright (c) 2014, Robert Calvert   
 Copyright (c) 2013, Slick2D
 
-See the license file for license rights and limitations (MIT).
+See the license file for license rights and limitations (BSD).
 
 [slick-util]:http://slick.ninjacave.com/
 [LWJGL3]:http://www.lwjgl.org/
