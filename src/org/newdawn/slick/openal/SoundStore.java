@@ -24,17 +24,17 @@ import org.newdawn.slick.util.ResourceLoader;
  * @author Rockstar
  */
 public class SoundStore {
-
-    /**
-     * The single instance of this class
-     */
-    private static SoundStore store = new SoundStore();
     
     /**
      * The ALContext context entry
      */
     private ALContext alContext;
 
+    /**
+     * The single instance of this class
+     */
+    private static SoundStore store = new SoundStore();
+    
     /**
      * True if sound effects are turned on
      */
@@ -536,7 +536,7 @@ public class SoundStore {
     /**
      * Get the OpenAL source used for music
      *
-     * @return The open al source used for music
+     * @return The open AL source used for music
      */
     private int getMusicSource() {
         return sources.get(0);
@@ -587,7 +587,7 @@ public class SoundStore {
     /**
      * Get a MOD sound (mod/xm etc)
      *
-     * @param ref The refernece to the mod to load
+     * @param ref The reference to the mod to load
      * @return The sound for play back
      * @throws IOException Indicates a failure to read the data
      */

@@ -89,12 +89,12 @@ public class AudioLoader {
         if (format.equals(OGG)) {
             return SoundStore.get().getOggStream(url);
         }
-        //if (format.equals(MOD)) {
-        //    return SoundStore.get().getMOD(url.openStream());
-        //}
-        //if (format.equals(XM)) {
-        //    return SoundStore.get().getMOD(url.openStream());
-        //}
+        if (format.equals(MOD)) {
+            return SoundStore.get().getMOD(url.openStream());
+        }
+        if (format.equals(XM)) {
+            return SoundStore.get().getMOD(url.openStream());
+        }
 
         throw new IOException("Unsupported format for streaming Audio: " + format);
     }
