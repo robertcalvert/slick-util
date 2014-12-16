@@ -31,6 +31,7 @@ import org.newdawn.slick.util.ResourceLoader;
  * framework.
  *
  * @author kevin
+ * @author rcalvert
  */
 public class TestUtils {
 

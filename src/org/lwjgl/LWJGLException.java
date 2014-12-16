@@ -1,14 +1,14 @@
 package org.lwjgl;
 
 /**
- * A wrapper for the older LWJGL2 Exceptions still used by IBXM
- * 
+ * An implementation of the LWJGL2 Exception still used by IBXM
+ *
  * @author rcalvert
  */
 public class LWJGLException extends Exception {
 
     /**
-     * Create a new exception with a detail message
+     * Create a new exception
      */
     public LWJGLException() {
         super();
