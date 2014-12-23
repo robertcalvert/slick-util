@@ -27,7 +27,7 @@ import org.lwjgl.opengl.GLContext;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 /**
- * A simple utility test to use the internal SUXAPI without the sux
+ * A simple utility test to use the internal SUX API
  * framework.
  *
  * @author kevin

@@ -5,7 +5,7 @@ import io.flob.sux.opengl.renderer.Renderer;
 import org.lwjgl.opengl.GL11;
 
 /**
- * A utility to allow performing GL operations without contaminating the sux
+ * A utility to allow performing GL operations without contaminating the SUX
  * OpenGL state. Note this will not protect you from OpenGL programming errors
  * like a glBegin() without a glEnd(), or glPush() without glPop() etc.
  *
@@ -104,7 +104,7 @@ public abstract class SUXCallable {
      * until the GL operations have been performed.
      *
      * @throws SUXException Indicates a failure while performing the GL
-     * operations or maintaining SUXState
+     * operations or maintaining SUX State
      */
     public final void call() throws SUXException {
         enterSafeBlock();
@@ -116,7 +116,7 @@ public abstract class SUXCallable {
 
     /**
      * Perform the GL operations that this callable is intended to. This
-     * operations should not effect the SUXOpenGL state.
+     * operations should not effect the SUX OpenGL state.
      *
      * @throws SUXException Indicates a failure of some sort. This is user
      * exception
