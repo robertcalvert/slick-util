@@ -1,12 +1,13 @@
-# slick-util
+# SUX (slick-util extended)
 
-This is a work in progress implementation of [slick-util] for [LWJGL3].
+SUX is a fork of [slick-util] for use with the newer [LWJGL3].
+
 
 Screenshot:
 
 ![screenshot](screenshot.png)
 
-**NOTE: ninjacave now provides a [slick-util3] wrapper which probably works much better than my implementation. If you are interested in slick-util for LWJGL3 you should definitely check out the ninjacave wrapper fisrt.**
+**NOTE: ninjacave now provides a [slick-util3] wrapper which probably works much better than SUX. If you are interested in slick-util for LWJGL3 you should probably check out the ninjacave wrapper first.**
 
 ---
 
