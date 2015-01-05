@@ -27,8 +27,7 @@ import org.lwjgl.opengl.GLContext;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 /**
- * A simple utility test to use the internal SUX API
- * framework.
+ * A simple utility test to use the internal SUX API framework.
  *
  * @author kevin
  * @author rcalvert
@@ -94,6 +93,11 @@ public class TestUtils {
      * Start the test
      */
     public void start() {
+
+        // Start AWT headless to allow support on OS X
+        // This has not been tested as I do not have access to a Mac
+        System.setProperty("java.awt.headless", "true");
+
         // turn off all but errors
         Log.setVerbose(false);
 
@@ -114,11 +118,11 @@ public class TestUtils {
                 GLFW.glfwPollEvents();
             }
             GLFW.glfwDestroyWindow(window);
-            keyCallback = GLFW.glfwSetKeyCallback(window, null);
+            keyCallback.release();
         } finally {
             SoundStore.get().destroy();
             GLFW.glfwTerminate();
-            errorCallback = GLFW.glfwSetErrorCallback(null);
+            errorCallback.release();
         }
     }
 
@@ -306,7 +310,7 @@ public class TestUtils {
 
         font1.drawString(10, 150, "Hello LWJGL " + org.lwjgl.Sys.getVersion() + " world!", Color.yellow);
         font2.drawString(10, 180, "Hello LWJGL " + org.lwjgl.Sys.getVersion() + " world!", Color.green);
-        
+
     }
 
 }
