@@ -152,12 +152,12 @@ public class ImmediateModeOGLRenderer implements SGL {
 
     @Override
     public void glGetFloat(int id, FloatBuffer ret) {
-        GL11.glGetFloat(id, ret);
+        GL11.glGetFloatv(id, ret);
     }
 
     @Override
     public void glGetInteger(int id, IntBuffer ret) {
-        GL11.glGetInteger(id, ret);
+        GL11.glGetIntegerv(id, ret);
     }
 
     @Override
@@ -281,7 +281,7 @@ public class ImmediateModeOGLRenderer implements SGL {
 
     @Override
     public void glLoadMatrix(FloatBuffer buffer) {
-        GL11.glLoadMatrix(buffer);
+        GL11.glLoadMatrixf(buffer);
     }
 
     @Override

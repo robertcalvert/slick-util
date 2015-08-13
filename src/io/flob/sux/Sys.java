@@ -16,7 +16,7 @@ public class Sys {
     /**
      * The development state of the current build.
      */
-    public static final BuildType BUILD_TYPE = BuildType.ALPHA;
+    public static final BuildType BUILD_TYPE = BuildType.BETA;
 
     /**
      * *

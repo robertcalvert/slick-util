@@ -388,9 +388,9 @@ public class SoundStore {
                 listenerPos.flip();
                 listenerVel.flip();
                 listenerOri.flip();
-                AL10.alListener(AL10.AL_POSITION, listenerPos);
-                AL10.alListener(AL10.AL_VELOCITY, listenerVel);
-                AL10.alListener(AL10.AL_ORIENTATION, listenerOri);
+                AL10.alListenerfv(AL10.AL_POSITION, listenerPos);
+                AL10.alListenerfv(AL10.AL_VELOCITY, listenerVel);
+                AL10.alListenerfv(AL10.AL_ORIENTATION, listenerOri);
 
                 Log.info("- Sounds source generated");
             }
@@ -458,8 +458,8 @@ public class SoundStore {
                 sourcePos.put(new float[]{x, y, z});
                 sourcePos.flip();
                 sourceVel.flip();
-                AL10.alSource(sources.get(nextSource), AL10.AL_POSITION, sourcePos);
-                AL10.alSource(sources.get(nextSource), AL10.AL_VELOCITY, sourceVel);
+                AL10.alSourcefv(sources.get(nextSource), AL10.AL_POSITION, sourcePos);
+                AL10.alSourcefv(sources.get(nextSource), AL10.AL_VELOCITY, sourceVel);
 
                 AL10.alSourcePlay(sources.get(nextSource));
 
