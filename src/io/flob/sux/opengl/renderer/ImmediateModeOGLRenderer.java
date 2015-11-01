@@ -5,8 +5,8 @@ import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import org.lwjgl.opengl.EXTSecondaryColor;
+import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GLContext;
 
 /**
  * The default OpenGL renderer, uses immediate mode for everything
@@ -310,12 +310,12 @@ public class ImmediateModeOGLRenderer implements SGL {
 
     @Override
     public boolean canTextureMirrorClamp() {
-        return GLContext.createFromCurrent().getCapabilities().GL_ARB_texture_mirror_clamp_to_edge;
+        return GL.createCapabilities().GL_ARB_texture_mirror_clamp_to_edge;
     }
 
     @Override
     public boolean canSecondaryColor() {
-        return GLContext.createFromCurrent().getCapabilities().GL_EXT_secondary_color;
+        return GL.createCapabilities().GL_EXT_secondary_color;
     }
 
     @Override
