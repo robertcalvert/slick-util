@@ -13,7 +13,7 @@ Screenshot:
 
 ## License
 
-Copyright (c) 2014, Robert Calvert   
+Copyright (c) 2015, Robert Calvert   
 Copyright (c) 2013, Slick2D
 
 See the license file for license rights and limitations (BSD).

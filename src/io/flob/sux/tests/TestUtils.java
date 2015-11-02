@@ -32,10 +32,16 @@ import static org.lwjgl.system.MemoryUtil.*;
 public class TestUtils {
 
     /**
-     * The display window handle
+     * The window handle
      */
     private long window;
+    /**
+     * The window width
+     */
     private final int WIDTH = 400;
+    /**
+     * The window height
+     */
     private final int HEIGHT = 400;
     /**
      * Reference for callback
@@ -73,11 +79,11 @@ public class TestUtils {
     /**
      * The font to draw to the screen
      */
-    private TrueTypeFont font1;
+    private TrueTypeFont fontSystem;
     /**
      * The font to draw to the screen
      */
-    private TrueTypeFont font2;
+    private TrueTypeFont fontResource;
 
     /**
      * Entry point to the tests
@@ -94,14 +100,14 @@ public class TestUtils {
     public void run() {
 
         Log.setVerbose(false);
-        System.out.println("LWJGL: " + org.lwjgl.Sys.getVersion());
         System.out.println("SUX: " + Sys.getVersion());
+        System.out.println("LWJGL: " + org.lwjgl.Sys.getVersion());
 
         try {
-            initWindow();
+            initGLFW();
             initGL();
             initResources();
-            initKeyboard();
+            initInput();
             loop();
 
             // Release window and window callbacks
@@ -117,9 +123,9 @@ public class TestUtils {
     }
 
     /**
-     * Initialise the GL window
+     * Initialise GLFW
      */
-    private void initWindow() {
+    private void initGLFW() {
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
         glfwSetErrorCallback(errorCallback = Callbacks.errorCallbackPrint(System.err));
@@ -132,10 +138,12 @@ public class TestUtils {
         // Configure our window
         glfwDefaultWindowHints(); // optional, the current window hints are already the default
         glfwWindowHint(GLFW_VISIBLE, GL_FALSE); // the window will stay hidden after creation
-        glfwWindowHint(GLFW_RESIZABLE, GL_TRUE); // the window will be resizable
+        glfwWindowHint(GLFW_RESIZABLE, GL_FALSE); // the window will not be resizable
 
         // Create the window
-        window = glfwCreateWindow(WIDTH, HEIGHT, "SUX " + Sys.getVersion(), NULL, NULL);
+        window = glfwCreateWindow(WIDTH, HEIGHT, 
+                "SUX " + Sys.getVersion() + " / LWJGL " + org.lwjgl.Sys.getVersion()
+                , NULL, NULL);
         if (window == NULL) {
             throw new RuntimeException("Failed to create the GLFW window");
         }
@@ -209,15 +217,13 @@ public class TestUtils {
 
         try {
             Font awtFont = new Font("Times New Roman", Font.BOLD, 16);
-            font1 = new TrueTypeFont(awtFont, true);
+            fontSystem = new TrueTypeFont(awtFont, true);
 
             InputStream inputStream = ResourceLoader.getResourceAsStream("../test/resource/font/Grand9KPixel.ttf");
-            Font awtFont2 = Font.createFont(Font.TRUETYPE_FONT, inputStream);
-            awtFont2 = awtFont2.deriveFont(16f);
-            font2 = new TrueTypeFont(awtFont2, true);
-        } catch (FontFormatException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+            awtFont = Font.createFont(Font.TRUETYPE_FONT, inputStream);
+            awtFont = awtFont.deriveFont(16f);
+            fontResource = new TrueTypeFont(awtFont, true);
+        } catch (FontFormatException | IOException e) {
             e.printStackTrace();
         }
 
@@ -228,7 +234,7 @@ public class TestUtils {
 
             // or setting up a stream to read from. Note that the argument becomes
             // a URL here so it can be reopened when the stream is complete. Probably
-            // should have reset the stream by thats not how the original stuff worked
+            // should have reset the stream but thats not how the original stuff worked
             oggStream = AudioLoader.getStreamingAudio("OGG",
                     new File("../test/resource/audio/bongos.ogg").toURI().toURL());
 
@@ -240,8 +246,8 @@ public class TestUtils {
             wavEffect = AudioLoader.getAudio("WAV",
                     new FileInputStream("../test/resource/audio/coin.wav"));
 
-            // can load mods (XM, MOD) using ibxm which is then played through OpenAL. MODs
-            // are always streamed based on the way IBXM works
+            // you can load mods (XM, MOD) using ibxm which is then played through OpenAL.
+            // MODs are always streamed based on the way IBXM works
             modStream = AudioLoader.getStreamingAudio("MOD",
                     new File("../test/resource/audio/SMB-X.XM").toURI().toURL());
 
@@ -254,28 +260,29 @@ public class TestUtils {
     }
 
     /**
-     * Initialise the keyboard
+     * Initialise input
      */
-    private void initKeyboard() {
+    private void initInput() {
 
         // Setup a key callback. It will be called every time a key is pressed, repeated or released.
         glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
             @Override
             public void invoke(long window, int key, int scancode, int action, int mods) {
                 if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
+                    // tell GLFW to close the window
                     glfwSetWindowShouldClose(window, GL_TRUE);
                 }
                 if (key == GLFW_KEY_Q && action == GLFW_PRESS) {
-                    // play as a one off sound effect
-                    oggEffect.playAsSoundEffect(1.0f, 1.0f, false);
-                }
-                if (key == GLFW_KEY_W && action == GLFW_PRESS) {
                     // replace the music thats curretly playing with the OGG
                     oggStream.playAsMusic(1.0f, 1.0f, true);
                 }
-                if (key == GLFW_KEY_E && action == GLFW_PRESS) {
+                if (key == GLFW_KEY_W && action == GLFW_PRESS) {
                     // replace the music thats curretly playing with the mod
                     modStream.playAsMusic(1.0f, 1.0f, true);
+                }
+                if (key == GLFW_KEY_E && action == GLFW_PRESS) {
+                    // play as a one off sound effect
+                    oggEffect.playAsSoundEffect(1.0f, 1.0f, false);
                 }
                 if (key == GLFW_KEY_R && action == GLFW_PRESS) {
                     // play as a one off sound effect
@@ -322,7 +329,7 @@ public class TestUtils {
         // Flush out any bleeding
         Color.white.bind();
 
-        // Render the image
+        // Render the texture example
         texture.bind();
         glBegin(GL_QUADS);
         glTexCoord2f(0, 0);
@@ -335,9 +342,25 @@ public class TestUtils {
         glVertex2f(10, 10 + texture.getTextureHeight());
         glEnd();
 
-        // Render the text
-        font1.drawString(10, 150, "Hello LWJGL " + org.lwjgl.Sys.getVersion() + " world!", Color.yellow);
-        font2.drawString(10, 180, "Hello LWJGL " + org.lwjgl.Sys.getVersion() + " world!", Color.green);
+        // Render the text examples
+        fontSystem.drawString(20 + texture.getTextureWidth(), 10,
+                "This is a system font", Color.yellow);
+        fontResource.drawString(20 + texture.getTextureWidth(), 10 + fontSystem.getLineHeight(),
+                "This is a resource font", Color.green);
+
+        // Render the input legend
+        int height = 20 + texture.getTextureHeight();
+        fontResource.drawString(10, height, "Esc: Close the test", Color.white);
+        height += fontResource.getLineHeight();
+        fontResource.drawString(10, height, "Q: Play the OGG music", Color.white);
+        height += fontResource.getLineHeight();
+        fontResource.drawString(10, height, "W: Play the MOD music", Color.white);
+        height += fontResource.getLineHeight();
+        fontResource.drawString(10, height, "E: Play a one off OGG sound", Color.white);
+        height += fontResource.getLineHeight();
+        fontResource.drawString(10, height, "R: Play a one off AIF sound", Color.white);
+        height += fontResource.getLineHeight();
+        fontResource.drawString(10, height, "T: Play a one off WAV sound", Color.white);
     }
 
 }
