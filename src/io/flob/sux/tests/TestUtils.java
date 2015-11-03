@@ -128,7 +128,7 @@ public class TestUtils {
     private void initGLFW() {
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
-        glfwSetErrorCallback(errorCallback = Callbacks.errorCallbackPrint(System.err));
+        glfwSetErrorCallback(errorCallback = GLFWErrorCallback.createPrint(System.err));
 
         // Initialize GLFW. Most GLFW functions will not work before doing this.
         if (glfwInit() != GL_TRUE) {
@@ -141,20 +141,19 @@ public class TestUtils {
         glfwWindowHint(GLFW_RESIZABLE, GL_FALSE); // the window will not be resizable
 
         // Create the window
-        window = glfwCreateWindow(WIDTH, HEIGHT, 
-                "SUX " + Sys.getVersion() + " / LWJGL " + org.lwjgl.Sys.getVersion()
-                , NULL, NULL);
+        window = glfwCreateWindow(WIDTH, HEIGHT,
+                "SUX " + Sys.getVersion() + " / LWJGL " + org.lwjgl.Sys.getVersion(), NULL, NULL);
         if (window == NULL) {
             throw new RuntimeException("Failed to create the GLFW window");
         }
 
         // Get the resolution of the primary monitor
-        ByteBuffer vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         // Center our window
         glfwSetWindowPos(
                 window,
-                (GLFWvidmode.width(vidmode) - WIDTH) / 2,
-                (GLFWvidmode.height(vidmode) - HEIGHT) / 2
+                (vidmode.getWidth() - WIDTH) / 2,
+                (vidmode.getHeight() - HEIGHT) / 2
         );
 
         // Make the OpenGL context current
