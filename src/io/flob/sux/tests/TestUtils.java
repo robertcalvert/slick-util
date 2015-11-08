@@ -16,7 +16,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -271,23 +270,23 @@ public class TestUtils {
                     // tell GLFW to close the window
                     glfwSetWindowShouldClose(window, GL_TRUE);
                 }
-                if (key == GLFW_KEY_Q && action == GLFW_PRESS) {
+                if (key == GLFW_KEY_F1 && action == GLFW_PRESS) {
                     // replace the music thats curretly playing with the OGG
                     oggStream.playAsMusic(1.0f, 1.0f, true);
                 }
-                if (key == GLFW_KEY_W && action == GLFW_PRESS) {
+                if (key == GLFW_KEY_F2 && action == GLFW_PRESS) {
                     // replace the music thats curretly playing with the mod
                     modStream.playAsMusic(1.0f, 1.0f, true);
                 }
-                if (key == GLFW_KEY_E && action == GLFW_PRESS) {
+                if (key == GLFW_KEY_F3 && action == GLFW_PRESS) {
                     // play as a one off sound effect
                     oggEffect.playAsSoundEffect(1.0f, 1.0f, false);
                 }
-                if (key == GLFW_KEY_R && action == GLFW_PRESS) {
+                if (key == GLFW_KEY_F4 && action == GLFW_PRESS) {
                     // play as a one off sound effect
                     aifEffect.playAsSoundEffect(1.0f, 1.0f, false);
                 }
-                if (key == GLFW_KEY_T && action == GLFW_PRESS) {
+                if (key == GLFW_KEY_F5 && action == GLFW_PRESS) {
                     // play as a one off sound effect
                     wavEffect.playAsSoundEffect(1.0f, 1.0f, false);
                 }
@@ -351,15 +350,15 @@ public class TestUtils {
         int height = 20 + texture.getTextureHeight();
         fontResource.drawString(10, height, "Esc: Close the test", Color.white);
         height += fontResource.getLineHeight();
-        fontResource.drawString(10, height, "Q: Play the OGG music", Color.white);
+        fontResource.drawString(10, height, "F1: Play the OGG music", Color.white);
         height += fontResource.getLineHeight();
-        fontResource.drawString(10, height, "W: Play the MOD music", Color.white);
+        fontResource.drawString(10, height, "F2: Play the MOD music", Color.white);
         height += fontResource.getLineHeight();
-        fontResource.drawString(10, height, "E: Play a one off OGG sound", Color.white);
+        fontResource.drawString(10, height, "F3: Play a one off OGG sound", Color.white);
         height += fontResource.getLineHeight();
-        fontResource.drawString(10, height, "R: Play a one off AIF sound", Color.white);
+        fontResource.drawString(10, height, "F4: Play a one off AIF sound", Color.white);
         height += fontResource.getLineHeight();
-        fontResource.drawString(10, height, "T: Play a one off WAV sound", Color.white);
+        fontResource.drawString(10, height, "F5: Play a one off WAV sound", Color.white);
     }
 
 }

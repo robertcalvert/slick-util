@@ -1,7 +1,7 @@
 The software known as "SUX" is distributed under
 the following terms:
 
-Copyright (c) 2014, Robert Calvert
+Copyright (c) 2015, Robert Calvert
 
 All rights reserved.
 

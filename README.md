@@ -7,7 +7,7 @@ Screenshot:
 
 ![screenshot](screenshot.png)
 
-**NOTE: ninjacave now provides a [slick-util3] wrapper which probably works much better than SUX. If you are interested in slick-util for LWJGL3 you should probably check out the ninjacave wrapper first.**
+**NOTE: ninjacave now provide a [slick-util3] wrapper which probably works better than SUX. If you are interested in slick-util for LWJGL3 then you should check out the ninjacave wrapper first.**
 
 ---
 
