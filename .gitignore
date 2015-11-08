@@ -1,8 +1,12 @@
-# Exclude Netbean files/folders
-build.xml
-nbproject/
+# Ant specific
 build/
 dist/
 
-# Exclude the test folder
+# Netbeans specific
+build.xml
+nbproject/*
+!nbproject/project.properties
+!nbproject/project.xml
+
+# Testing
 test/
