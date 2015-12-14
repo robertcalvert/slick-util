@@ -31,6 +31,7 @@
  */
 package io.flob.sux.openal;
 
+import io.flob.sux.util.Log;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -101,7 +102,7 @@ public class AiffData {
                     AudioSystem.getAudioInputStream(
                             new BufferedInputStream(path.openStream())));
         } catch (Exception e) {
-            org.lwjgl.LWJGLUtil.log("Unable to create from: " + path);
+            Log.error("Unable to create from: " + path);
             e.printStackTrace();
             return null;
         }
@@ -129,7 +130,7 @@ public class AiffData {
             return create(
                     AudioSystem.getAudioInputStream(is));
         } catch (Exception e) {
-            org.lwjgl.LWJGLUtil.log("Unable to create from inputstream");
+            Log.error("Unable to create from inputstream");
             e.printStackTrace();
             return null;
         }

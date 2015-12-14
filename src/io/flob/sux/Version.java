@@ -4,7 +4,7 @@ package io.flob.sux;
  *
  * @author rcalvert
  */
-public class Sys {
+public class Version {
 
     /**
      * Current version of library.

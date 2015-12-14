@@ -1011,7 +1011,8 @@ public class SoundStore {
      */
     public void destroy() {
         if(alContext != null) {
-            AL.destroy(alContext);
+            alContext.destroy();
+            alContext.getDevice().close();
         }
     }
     

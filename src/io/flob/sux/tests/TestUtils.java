@@ -1,7 +1,7 @@
 package io.flob.sux.tests;
 
 import io.flob.sux.Color;
-import io.flob.sux.Sys;
+import io.flob.sux.Version;
 import io.flob.sux.TrueTypeFont;
 import io.flob.sux.openal.Audio;
 import io.flob.sux.openal.AudioLoader;
@@ -99,8 +99,8 @@ public class TestUtils {
     public void run() {
 
         Log.setVerbose(false);
-        System.out.println("SUX: " + Sys.getVersion());
-        System.out.println("LWJGL: " + org.lwjgl.Sys.getVersion());
+        System.out.println("SUX: " + Version.getVersion());
+        System.out.println("LWJGL: " + org.lwjgl.Version.getVersion());
 
         try {
             initGLFW();
@@ -141,7 +141,7 @@ public class TestUtils {
 
         // Create the window
         window = glfwCreateWindow(WIDTH, HEIGHT,
-                "SUX " + Sys.getVersion() + " / LWJGL " + org.lwjgl.Sys.getVersion(), NULL, NULL);
+                "SUX " + Version.getVersion() + " / LWJGL " + org.lwjgl.Version.getVersion(), NULL, NULL);
         if (window == NULL) {
             throw new RuntimeException("Failed to create the GLFW window");
         }
@@ -151,8 +151,8 @@ public class TestUtils {
         // Center our window
         glfwSetWindowPos(
                 window,
-                (vidmode.getWidth() - WIDTH) / 2,
-                (vidmode.getHeight() - HEIGHT) / 2
+                (vidmode.width() - WIDTH) / 2,
+                (vidmode.height() - HEIGHT) / 2
         );
 
         // Make the OpenGL context current
